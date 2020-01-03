@@ -1,2 +1,2 @@
 # FRC2020-1123
-AIMRobotics Team 1123 2020 Season Repository
+Welcome to the AIM Robotics, FRC Team 1123, Season 2020 repository!
