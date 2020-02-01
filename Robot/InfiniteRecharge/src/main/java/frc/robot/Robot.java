@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2017-2019 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -7,107 +7,93 @@
 
 package frc.robot;
 
+import java.util.logging.Logger;
+
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
+
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import frc.robot.MecanumDriveTrain;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
+ * This is a demo program showing how to use Mecanum control with the RobotDrive
+ * class.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
+  private static final int kFrontLeftChannel = 11; // 11,12,13,14
+  private static final int kRearLeftChannel = 12;
+  private static final int kFrontRightChannel = 13;
+  private static final int kRearRightChannel = 14;
+  private RobotContainer m_RobotContainer;
 
-  private RobotContainer m_robotContainer;
+  private static final int kJoystickChannel = 0;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+  private MecanumDriveTrain m_robotDrive;
+  private Joystick m_stick;
+
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight"); 
+
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    
+    // You may need to change or remove this to match your robot (for later).
+    // frontLeft.setInverted(true);
+    // rearLeft.setInverted(true);
+
+     m_stick = new Joystick(kJoystickChannel);
+     m_RobotContainer = new RobotContainer();
+     LiveWindow.disableAllTelemetry();
+     
   }
 
-  /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-  }
-
-  /**
-   * This function is called once each time the robot enters Disabled mode.
-   */
-  @Override
-  public void disabledInit() {
-  }
-
-  @Override
-  public void disabledPeriodic() {
-  }
-
-  /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
-   */
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
-  }
-
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
-
-  /**
-   * This function is called periodically during operator control.
-   */
   @Override
   public void teleopPeriodic() {
-  }
+    CommandScheduler.getInstance().run();
+    // Use the joystick X axis for lateral movement, Y axis for forward
+    // movement, and Z axis for rotation.
+   // double ySpeed = m_stick.getX();
+    //double xSpeed = -m_stick.getY();
+   // double zSpeed = m_stick.getZ();
+   // double throttle = (1-m_stick.getThrottle())/2; // Limits Max Speed
+   // AHRS ahrs = new AHRS(SPI.Port.kMXP); 
+   // if(m_stick.getTrigger()){
+   //   SmartDashboard.putNumber("gyro angle ", ahrs.getAngle());
+  //}
 
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
+    
+    // System.out.println("Yspeed" + ySpeed);
+    // System.out.println("Xspeed" + xSpeed);
+    // System.out.println("Throttle" + throttle);
 
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
+  // if(m_stick.getTrigger())
+    //  m_robotDrive.swivelCartesian(ySpeed, xSpeed, zSpeed, throttle);
+    //else
+      //m_robotDrive.driveCartesian(ySpeed, xSpeed, zSpeed, throttle, 0.0);
+
+    // // LIMELIGHT CAMERA
+    // NetworkTableEntry tx = table.getEntry("tx"); 
+    // NetworkTableEntry ty = table.getEntry("ty"); 
+    // NetworkTableEntry ta = table.getEntry("ta");
+
+    // //read values periodically
+    // double x = tx.getDouble(0.0);
+    // double y = ty.getDouble(0.0);
+    // double area = ta.getDouble(0.0);
+
+    // //post to smart dashboard periodically
+    // SmartDashboard.putNumber("LimelightX", x);
+    // SmartDashboard.putNumber("LimelightY", y);
+    // SmartDashboard.putNumber("LimelightArea", area);
   }
 }

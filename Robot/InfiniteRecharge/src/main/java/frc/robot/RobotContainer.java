@@ -10,8 +10,19 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.Joystick;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import java.util.logging.Logger;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,10 +32,15 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private Joystick m_joystick = new Joystick(0);
+  // CANSparkMax motorFixedA = new CANSparkMax(15, MotorType.kBrushless);
+  // CANSparkMax motorFixedB = new CANSparkMax(17, MotorType.kBrushless);
+  CANSparkMax motorFixedA;
+  CANSparkMax motorFixedB;
+  private ShooterSubsystem shooterSubsystem = new ShooterSubsystem(motorFixedA, motorFixedB);
+  private ShooterCommand Shoot = new ShooterCommand(shooterSubsystem);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
 
 
   /**
@@ -33,6 +49,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    
   }
 
   /**
@@ -42,6 +59,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton ShooterButton = new JoystickButton(m_joystick, 2);
+    ShooterButton.whileHeld(Shoot);
   }
 
 
@@ -52,6 +71,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+     return null;
   }
 }
