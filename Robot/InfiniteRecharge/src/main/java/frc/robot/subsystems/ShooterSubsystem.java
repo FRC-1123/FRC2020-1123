@@ -42,6 +42,11 @@ private final CANSparkMax m_motorFixedA;
 
   public static final double kDefaultMaxOutput = 1.0;
   protected double m_maxOutput = kDefaultMaxOutput;
+
+  int P, I, D = 1;
+  double setpoint;
+  double integralA, previous_errorA, derivativeA, errorA, rcwA = 0;
+  double integralB, previous_errorB, derivativeB, errorB, rcwB = 0;
    
   public ShooterSubsystem(CANSparkMax motorFixedA, CANSparkMax motorFixedB) {
 
@@ -63,18 +68,59 @@ private final CANSparkMax m_motorFixedA;
 
   }
 
-  public void Shoot(){
+  public void Shoot(int rmp){
+    this.setpoint = rmp;
+   // if (previous_errorA != 0 || previous_errorB !=0)
+  //  {
+      PID();
+      if(rcwA > 1){
+        logger.info("Motor went too fast forwards");
+        this.rcwA = 1;
+     }
+     if(rcwA < -1){
+      logger.info("Motor went too fast backwards");
+      this.rcwA = -1;
+   }
+     
+     if(rcwB > 1){
+      logger.info("Motor went too fast forwards");
+      this.rcwB = 1;
+       }
+
+    if(rcwB < -1){
+      logger.info("Motor went too fast backwards");
+      this.rcwB = -1;
+    }
+      this.m_motorFixedA.set(rcwA);
+      this.m_motorFixedB.set(-rcwB);
+  //  }
+
   //  this.m_motorFixedA.set(1);
+  //  this.m_motorFixedB.follow(m_motorFixedA, true)
   //  this.m_motorFixedB.set(-1);
     logger.info("Shoot was called");
 
-  //  SmartDashboard.putNumber("Shooter Motor 1 RPM ", m_motorFixedAEncoder.getVelocity());
-  //  SmartDashboard.putNumber("Shooter Motor 2 RPM ", m_motorFixedBEncoder.getVelocity());
+   SmartDashboard.putNumber("Shooter Motor 1 RPM ", m_motorFixedAEncoder.getVelocity());
+   SmartDashboard.putNumber("Shooter Motor 2 RPM ", m_motorFixedBEncoder.getVelocity());
+  }
+
+
+  private void PID() {
+    errorA = setpoint - m_motorFixedAEncoder.getVelocity(); // Error = Target - Actual
+    this.integralA += (errorA*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
+    derivativeA = (errorA - this.previous_errorA) / .02;
+    this.rcwA = (P*errorA + I*this.integralA + D*derivativeA)/5800;
+    previous_errorA = errorA;
+    errorB = setpoint + m_motorFixedBEncoder.getVelocity(); // Error = Target - Actual
+    this.integralB += (errorB*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
+    derivativeB = (errorB - this.previous_errorB) / .02;
+    this.rcwA = (P*errorB + I*this.integralB + D*derivativeB)/5800;
+    previous_errorB = errorB;
   }
 
   public void Stop(){
-  //  this.m_motorFixedA.stopMotor();
-  //  this.m_motorFixedB.stopMotor();
+   this.m_motorFixedA.stopMotor();
+   this.m_motorFixedB.stopMotor();
     
   }
   

@@ -33,10 +33,10 @@ import java.util.logging.Logger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private Joystick m_joystick = new Joystick(0);
-  // CANSparkMax motorFixedA = new CANSparkMax(15, MotorType.kBrushless);
-  // CANSparkMax motorFixedB = new CANSparkMax(17, MotorType.kBrushless);
-  CANSparkMax motorFixedA;
-  CANSparkMax motorFixedB;
+  CANSparkMax motorFixedA = new CANSparkMax(16, MotorType.kBrushless);
+  CANSparkMax motorFixedB = new CANSparkMax(18, MotorType.kBrushless);
+  // CANSparkMax motorFixedA;
+  // CANSparkMax motorFixedB;
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem(motorFixedA, motorFixedB);
   private ShooterCommand Shoot = new ShooterCommand(shooterSubsystem);
 
