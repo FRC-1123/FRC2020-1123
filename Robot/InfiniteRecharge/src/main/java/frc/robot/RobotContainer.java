@@ -9,9 +9,30 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants;
+
+// Motors Libraries
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.can.*;
+
+// Drivetrain Motion
+import frc.robot.subsystems.MechanumDriveSubsystem;
+
+// Controlling Limelight
+import frc.robot.commands.LimelightCommand;
+import frc.robot.subsystems.LimelightSubsystem;
+
+// Shooting Power Cells
+import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.ShooterSubsystem;
+
+// Logging Robot Status
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.logging.Logger;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -21,11 +42,25 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private Joystick m_driveJoystick = new Joystick(Constants.driveJoystickChannel);
+  // private Joystick m_supportJoystick = new Joystick(Constants.supportJoystickChannel);
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  WPI_TalonSRX frontLeft = new WPI_TalonSRX(Constants.driveFrontLeftChannel);
+  WPI_TalonSRX rearLeft = new WPI_TalonSRX(Constants.driveRearLeftChannel);
+  WPI_TalonSRX frontRight = new WPI_TalonSRX(Constants.driveFrontRightChannel);
+  WPI_TalonSRX rearRight = new WPI_TalonSRX(Constants.driveRearRightChannel);
 
+  private MechanumDriveSubsystem m_robotDrive = new MechanumDriveSubsystem(frontLeft, rearLeft, frontRight, rearRight);
 
+  private LimelightSubsystem m_limelightSubsystem = new LimelightSubsystem();
+  private LimelightCommand m_limelightCommand = new LimelightCommand(m_limelightSubsystem);
+
+  CANSparkMax motorFixedA = new CANSparkMax(Constants.shootLeftChannel, MotorType.kBrushless);
+  CANSparkMax motorFixedB = new CANSparkMax(Constants.shootRightChannel, MotorType.kBrushless);
+  private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(motorFixedA, motorFixedB);
+  private ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
+
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -42,8 +77,31 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    JoystickButton limelightButton = new JoystickButton(m_driveJoystick, Constants.limelightButton);
+    limelightButton.whenReleased(m_limelightCommand); // Replace with Limelight Command
+
+    JoystickButton shooterButton = new JoystickButton(m_driveJoystick, Constants.shooterButton);
+    shooterButton.whileHeld(m_shooterCommand);
   }
 
+  public void driveRobot() { // WORKS
+    // Use the joystick X axis for lateral movement, Y axis for forward
+    // movement, and Z axis for rotation.
+    double ySpeed = m_driveJoystick.getX();
+    double xSpeed = -m_driveJoystick.getY();
+    double zSpeed = m_driveJoystick.getZ();
+    double throttle = (1-m_driveJoystick.getThrottle())/2; // Limits Max Speed
+    
+    if (m_driveJoystick.getTrigger())
+      m_robotDrive.swivelCartesian(ySpeed, xSpeed, zSpeed, throttle);
+    else
+      m_robotDrive.driveCartesian(ySpeed, xSpeed, zSpeed, throttle, 0.0);
+
+    SmartDashboard.putNumber("xSpeed", ySpeed);
+    SmartDashboard.putNumber("ySpeed", xSpeed);
+    SmartDashboard.putNumber("zSpeed", zSpeed);
+    SmartDashboard.putNumber("Throttle", throttle);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -52,6 +110,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+     return null;
   }
 }
