@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.logging.Logger;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
+
 
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -34,20 +36,19 @@ private final CANSparkMax m_motorFixedA;
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
 
+  double Motor1Voltage;
+  double Motor2Voltage;
+
   CANEncoder m_motorFixedAEncoder;
   CANEncoder m_motorFixedBEncoder;
   CANEncoder[] m_motorEncoders;
 
-  
+  PIDController Motor1 = new PIDController(1,1,1);
+    PIDController Motor2 = new PIDController(1,1,1);
 
   public static final double kDefaultMaxOutput = 1.0;
   protected double m_maxOutput = kDefaultMaxOutput;
 
-  int P, I, D = 1;
-  double setpoint;
-  double integralA, previous_errorA, derivativeA, errorA, rcwA = 0;
-  double integralB, previous_errorB, derivativeB, errorB, rcwB = 0;
-   
   public ShooterSubsystem(CANSparkMax motorFixedA, CANSparkMax motorFixedB) {
 
     this.m_motors = new CANSparkMax[6];
@@ -63,59 +64,38 @@ private final CANSparkMax m_motorFixedA;
     m_motorFixedBEncoder = m_motorFixedB.getEncoder();
     m_motorEncoders[1] = m_motorFixedBEncoder;
 
-    
-    
+    Motor1.setTolerance(100);
+    Motor2.setTolerance(100);
 
   }
 
-  public void Shoot(int rmp){
-    this.setpoint = rmp;
-   // if (previous_errorA != 0 || previous_errorB !=0)
-  //  {
-      PID();
-      if(rcwA > 1){
-        logger.info("Motor went too fast forwards");
-        this.rcwA = 1;
-     }
-     if(rcwA < -1){
-      logger.info("Motor went too fast backwards");
-      this.rcwA = -1;
-   }
-     
-     if(rcwB > 1){
-      logger.info("Motor went too fast forwards");
-      this.rcwB = 1;
-       }
+  public void Shoot(){
+    Motor1Voltage = Motor1.calculate(m_motorFixedAEncoder.getVelocity(), 5000);
+    Motor2Voltage = Motor2.calculate(m_motorFixedBEncoder.getVelocity(), -5000);
 
-    if(rcwB < -1){
-      logger.info("Motor went too fast backwards");
-      this.rcwB = -1;
+    if(Motor1Voltage > 1){
+      Motor1Voltage = 1;
+      logger.info("Motor1 tried to go too fast");
     }
-      this.m_motorFixedA.set(rcwA);
-      this.m_motorFixedB.set(-rcwB);
-  //  }
+    if(Motor1Voltage < -1){
+      Motor1Voltage = -1;
+      logger.info("Motor1 tried to go too fast");
+    }
+    if(Motor2Voltage > 1){
+      Motor2Voltage = 1; 
+      logger.info("Motor2 tried to go too fast");
+    }
+    if(Motor2Voltage < -1){
+      Motor2Voltage = -1;
+      logger.info("Motor2 tried to go too fast");
+    }
 
-  //  this.m_motorFixedA.set(1);
-  //  this.m_motorFixedB.follow(m_motorFixedA, true)
-  //  this.m_motorFixedB.set(-1);
+   this.m_motorFixedA.set(Motor1Voltage);
+   this.m_motorFixedB.set(Motor2Voltage);
     logger.info("Shoot was called");
 
    SmartDashboard.putNumber("Shooter Motor 1 RPM ", m_motorFixedAEncoder.getVelocity());
    SmartDashboard.putNumber("Shooter Motor 2 RPM ", m_motorFixedBEncoder.getVelocity());
-  }
-
-
-  private void PID() {
-    errorA = setpoint - m_motorFixedAEncoder.getVelocity(); // Error = Target - Actual
-    this.integralA += (errorA*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
-    derivativeA = (errorA - this.previous_errorA) / .02;
-    this.rcwA = (P*errorA + I*this.integralA + D*derivativeA)/5800;
-    previous_errorA = errorA;
-    errorB = setpoint + m_motorFixedBEncoder.getVelocity(); // Error = Target - Actual
-    this.integralB += (errorB*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
-    derivativeB = (errorB - this.previous_errorB) / .02;
-    this.rcwA = (P*errorB + I*this.integralB + D*derivativeB)/5800;
-    previous_errorB = errorB;
   }
 
   public void Stop(){
