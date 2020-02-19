@@ -32,24 +32,24 @@ public class RobotContainer {
   private Joystick m_joystick = new Joystick(Constants.kJoystickChannel);
   // The robot's subsystems and commands are defined here.
    private final MecanumDriveSubsystem m_driveSubsystem = new MecanumDriveSubsystem();
-  // private final DoubleSolenoid Solenoid1 = new DoubleSolenoid(1, 0, 7);
-  // private final DoubleSolenoid Solenoid2 = new DoubleSolenoid(1, 1, 6);
-  // private final DoubleSolenoid Solenoid3 = new DoubleSolenoid(1, 2, 5);
-  // private final DoubleSolenoid Solenoid4 = new DoubleSolenoid(1, 3, 4);
+  private final DoubleSolenoid Solenoid1 = new DoubleSolenoid(1, 0, 7);
+  private final DoubleSolenoid Solenoid2 = new DoubleSolenoid(1, 1, 6);
+  private final DoubleSolenoid Solenoid3 = new DoubleSolenoid(1, 2, 5);
+  private final DoubleSolenoid Solenoid4 = new DoubleSolenoid(1, 3, 4);
 
 
-  // private final Subsystem_FloatAxle m_Solenoids = new Subsystem_FloatAxle(Solenoid1, Solenoid2,
-  //  Solenoid3, Solenoid4);
-  // private final Solenoid1Fire Solenoid1Command= new Solenoid1Fire(m_Solenoids);
-  // private final Solenoid2Fire Solenoid2Command= new Solenoid2Fire(m_Solenoids);
-  // private final Solenoid3Fire Solenoid3Command= new Solenoid3Fire(m_Solenoids);
-  // private final Solenoid4Fire Solenoid4Command= new Solenoid4Fire(m_Solenoids);
+  private final Subsystem_FloatAxle m_Solenoids = new Subsystem_FloatAxle(Solenoid1, Solenoid2,
+   Solenoid3, Solenoid4);
+  private final Solenoid1Fire Solenoid1Command= new Solenoid1Fire(m_Solenoids);
+  private final Solenoid2Fire Solenoid2Command= new Solenoid2Fire(m_Solenoids);
+  private final Solenoid3Fire Solenoid3Command= new Solenoid3Fire(m_Solenoids);
+  private final Solenoid4Fire Solenoid4Command= new Solenoid4Fire(m_Solenoids);
 
-  // private final CANSparkMax PickUpMotor = new CANSparkMax(19, MotorType.kBrushless);
-  // private final DoubleSolenoid PickUpSolenoid = new DoubleSolenoid(1,0,7);
+  private final CANSparkMax PickUpMotor = new CANSparkMax(19, MotorType.kBrushless);
+  private final DoubleSolenoid PickUpSolenoid = new DoubleSolenoid(1,0,7);
 
-  // private final PickUpSubsystem m_PickUpSubsystem = new PickUpSubsystem(PickUpMotor, PickUpSolenoid);
- //  private final PickUpCommand PickUp = new PickUpCommand(m_PickUpSubsystem);
+  private final PickUpSubsystem m_PickUpSubsystem = new PickUpSubsystem(PickUpMotor, PickUpSolenoid);
+  private final PickUpCommand PickUp = new PickUpCommand(m_PickUpSubsystem);
 
 
   /**
@@ -79,18 +79,18 @@ public class RobotContainer {
     driveModeButton.whenHeld(new RunCommand(() -> m_driveSubsystem.pivotCartesian(m_joystick.getY(), m_joystick.getX(),
         m_joystick.getZ(), (1 - m_joystick.getThrottle()) / 2), m_driveSubsystem));
 
-    // JoystickButton SolenoidButton1 = new JoystickButton(m_joystick, 8);
-    // JoystickButton SolenoidButton2 = new JoystickButton(m_joystick, 7);
-    // JoystickButton SolenoidButton3 = new JoystickButton(m_joystick, 9);
-    // JoystickButton SolenoidButton4 = new JoystickButton(m_joystick, 10);
+    JoystickButton SolenoidButton1 = new JoystickButton(m_joystick, 8);
+    JoystickButton SolenoidButton2 = new JoystickButton(m_joystick, 7);
+    JoystickButton SolenoidButton3 = new JoystickButton(m_joystick, 9);
+    JoystickButton SolenoidButton4 = new JoystickButton(m_joystick, 10);
 
-    // SolenoidButton1.whenHeld(Solenoid1Command);
-    // SolenoidButton2.whenHeld(Solenoid2Command);
-    // SolenoidButton3.whenHeld(Solenoid3Command);
-    // SolenoidButton4.whenHeld(Solenoid4Command);
+    SolenoidButton1.whenHeld(Solenoid1Command);
+    SolenoidButton2.whenHeld(Solenoid2Command);
+    SolenoidButton3.whenHeld(Solenoid3Command);
+    SolenoidButton4.whenHeld(Solenoid4Command);
 
-    // JoystickButton PickUpButton = new JoystickButton(m_joystick, 2);
-    // PickUpButton.toggleWhenActive(PickUp);
+    JoystickButton PickUpButton = new JoystickButton(m_joystick, 2);
+    PickUpButton.toggleWhenActive(PickUp);
   }
 
   /**
