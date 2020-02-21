@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-//import frc.robot.commands.AutonomousCommandTest;
+import edu.wpi.first.wpilibj.Compressor;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -20,6 +21,8 @@ public class Robot extends TimedRobot {
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+
+  private Compressor c = new Compressor(0);
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -75,6 +78,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     logger.info("The robot is initializing autonomous mode.");
+    c.setClosedLoopControl(true);
 
     CommandScheduler.getInstance().cancelAll();
     logger.info("All prior scheduled commands are cancelled.");
@@ -93,10 +97,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     //logger.info("The robot has entered autonomous periodic.");
     //logger.info("The command scheduler is running.");
-    
     CommandScheduler.getInstance().run();
-
-
   }
 
   @Override
@@ -107,6 +108,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
       logger.info("The prior scheduled autonomous command is cancelled.");
+      c.setClosedLoopControl(true);
     }
   }
 

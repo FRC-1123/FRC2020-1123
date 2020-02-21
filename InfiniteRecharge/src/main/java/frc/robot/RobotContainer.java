@@ -6,7 +6,6 @@ import frc.robot.subsystems.*;
 import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -14,9 +13,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 
 
@@ -31,28 +34,34 @@ public class RobotContainer {
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   private Joystick m_joystick = new Joystick(Constants.kJoystickChannel);
   // The robot's subsystems and commands are defined here.
-   private final MecanumDriveSubsystem m_driveSubsystem = new MecanumDriveSubsystem();
-  private final DoubleSolenoid Solenoid1 = new DoubleSolenoid(1, 0, 7);
-  private final DoubleSolenoid Solenoid2 = new DoubleSolenoid(1, 1, 6);
-  private final DoubleSolenoid Solenoid3 = new DoubleSolenoid(1, 2, 5);
-  private final DoubleSolenoid Solenoid4 = new DoubleSolenoid(1, 3, 4);
+  private final MecanumDriveSubsystem m_driveSubsystem = new MecanumDriveSubsystem();
 
-
-  private final Subsystem_FloatAxle m_Solenoids = new Subsystem_FloatAxle(Solenoid1, Solenoid2,
-   Solenoid3, Solenoid4);
-  private final Solenoid1Fire Solenoid1Command= new Solenoid1Fire(m_Solenoids);
-  private final Solenoid2Fire Solenoid2Command= new Solenoid2Fire(m_Solenoids);
-  private final Solenoid3Fire Solenoid3Command= new Solenoid3Fire(m_Solenoids);
-  private final Solenoid4Fire Solenoid4Command= new Solenoid4Fire(m_Solenoids);
-
+  //PickUp motors and solenoids
   private final CANSparkMax PickUpMotor = new CANSparkMax(19, MotorType.kBrushless);
   private final DoubleSolenoid PickUpSolenoid = new DoubleSolenoid(1,0,7);
-
+  //PickUp subsystem and command
   private final PickUpSubsystem m_PickUpSubsystem = new PickUpSubsystem(PickUpMotor, PickUpSolenoid);
   private final PickUpCommand PickUp = new PickUpCommand(m_PickUpSubsystem);
 
+  //Shooter Motors and solenoids
+  // private final CANSparkMax ShooterMotor1 = new CANSparkMax(deviceID, MotorType.kBrushless);
+  // private final CANSparkMax ShooterMotor2 = new CANSparkMax(deviceID, MotorType.kBrushless);4
+  private final TalonFX ShooterMotor1 = new TalonFX(16);
+  private final TalonFX ShooterMotor2 = new TalonFX(18);
 
-  /**
+
+  private final DoubleSolenoid ShooterSolenoid1 = new DoubleSolenoid(1, 1, 6);
+  private final DoubleSolenoid ShooterSolenoid2 = new DoubleSolenoid(1, 2, 5);
+
+  //Shooter subsystem and commands
+  private final ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem(ShooterMotor1,
+   ShooterMotor2, ShooterSolenoid1, ShooterSolenoid2);
+   private final SpinShooterMotorsCommand m_SpinShooterMotorsCommand = new 
+   SpinShooterMotorsCommand(m_ShooterSubsystem);
+   private final ShooterLoadCommand m_ShooterLoadCommand = new ShooterLoadCommand(m_ShooterSubsystem);
+   private final ShooterShootCommand m_ShooterShootCommand = new ShooterShootCommand(m_ShooterSubsystem);
+
+  /** 
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
@@ -60,9 +69,9 @@ public class RobotContainer {
     configureButtonBindings();
 
     // Configure default commands
-   logger.info("Mecanum drive subsystem defaulting to driveCartesian.");
+    logger.info("Mecanum drive subsystem defaulting to driveCartesian.");
     m_driveSubsystem.setDefaultCommand(new RunCommand(() -> m_driveSubsystem.driveCartesian(m_joystick.getY(),
-       m_joystick.getX(), m_joystick.getZ(), (1 - m_joystick.getThrottle()) / 2), m_driveSubsystem));
+        m_joystick.getX(), m_joystick.getZ(), (1 - m_joystick.getThrottle()) / 2), m_driveSubsystem));
   }
 
   /**
@@ -79,18 +88,27 @@ public class RobotContainer {
     driveModeButton.whenHeld(new RunCommand(() -> m_driveSubsystem.pivotCartesian(m_joystick.getY(), m_joystick.getX(),
         m_joystick.getZ(), (1 - m_joystick.getThrottle()) / 2), m_driveSubsystem));
 
-    JoystickButton SolenoidButton1 = new JoystickButton(m_joystick, 8);
-    JoystickButton SolenoidButton2 = new JoystickButton(m_joystick, 7);
-    JoystickButton SolenoidButton3 = new JoystickButton(m_joystick, 9);
-    JoystickButton SolenoidButton4 = new JoystickButton(m_joystick, 10);
+    // This binding will move to the second joystick and likely a different button number
+    // Binds button 2 to control Limelight LEDs 
+    JoystickButton ledButton = new JoystickButton(m_joystick, 2);
+    ledButton.whenPressed(new InstantCommand(LimelightCommand::setLedStatus, new LimelightCamera()));
 
-    SolenoidButton1.whenHeld(Solenoid1Command);
-    SolenoidButton2.whenHeld(Solenoid2Command);
-    SolenoidButton3.whenHeld(Solenoid3Command);
-    SolenoidButton4.whenHeld(Solenoid4Command);
-
+    //PickUp Button binding
     JoystickButton PickUpButton = new JoystickButton(m_joystick, 2);
-    PickUpButton.toggleWhenActive(PickUp);
+    PickUpButton.whenHeld(PickUp);
+
+    //Shooter Button bindings
+    // JoystickButton SpinMotorsButton = new JoystickButton(m_joystick, 8);
+    // JoystickButton shooterLoadJoystickButton = new JoystickButton(m_joystick, 7);
+    // JoystickButton shooterShootJoystickButton = new JoystickButton(m_joystick, 9);
+    // SpinMotorsButton.toggleWhenActive(m_SpinShooterMotorsCommand);
+    // shooterLoadJoystickButton.whenPressed(m_ShooterLoadCommand);
+    // shooterShootJoystickButton.whenPressed(m_ShooterShootCommand);
+
+    ShuffleboardTab ShooterTab = Shuffleboard.getTab("ShooterTab");
+    ShooterTab.add("Spin Motors", m_SpinShooterMotorsCommand);
+    ShooterTab.add("Shoot", m_ShooterShootCommand);
+    ShooterTab.add("Load", m_ShooterLoadCommand);
   }
 
   /**
