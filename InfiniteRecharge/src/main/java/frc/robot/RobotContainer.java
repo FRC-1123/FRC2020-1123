@@ -37,17 +37,17 @@ public class RobotContainer {
   private final MecanumDriveSubsystem m_driveSubsystem = new MecanumDriveSubsystem();
 
   //PickUp motors and solenoids
-  private final CANSparkMax PickUpMotor = new CANSparkMax(19, MotorType.kBrushless);
+  private final CANSparkMax PickUpMotor = new CANSparkMax(Constants.PickUpMotorCanID, MotorType.kBrushless);
   private final DoubleSolenoid PickUpSolenoid = new DoubleSolenoid(1,0,7);
   //PickUp subsystem and command
   private final PickUpSubsystem m_PickUpSubsystem = new PickUpSubsystem(PickUpMotor, PickUpSolenoid);
   private final PickUpCommand PickUp = new PickUpCommand(m_PickUpSubsystem);
 
   //Shooter Motors and solenoids
-  // private final CANSparkMax ShooterMotor1 = new CANSparkMax(deviceID, MotorType.kBrushless);
-  // private final CANSparkMax ShooterMotor2 = new CANSparkMax(deviceID, MotorType.kBrushless);4
-  private final TalonFX ShooterMotor1 = new TalonFX(16);
-  private final TalonFX ShooterMotor2 = new TalonFX(18);
+  // private final CANSparkMax ShooterMotor1 = new CANSparkMax(Constants.ShooterMotor1CanID, MotorType.kBrushless);
+  // private final CANSparkMax ShooterMotor2 = new CANSparkMax(Constants.ShooterMotor2CanID, MotorType.kBrushless);
+  private final TalonFX ShooterMotor1 = new TalonFX(Constants.ShooterMotor1CanID);
+  private final TalonFX ShooterMotor2 = new TalonFX(Constants.ShooterMotor2CanID);
 
 
   private final DoubleSolenoid ShooterSolenoid1 = new DoubleSolenoid(1, 1, 6);
@@ -98,17 +98,22 @@ public class RobotContainer {
     PickUpButton.whenHeld(PickUp);
 
     //Shooter Button bindings
-    // JoystickButton SpinMotorsButton = new JoystickButton(m_joystick, 8);
-    // JoystickButton shooterLoadJoystickButton = new JoystickButton(m_joystick, 7);
-    // JoystickButton shooterShootJoystickButton = new JoystickButton(m_joystick, 9);
-    // SpinMotorsButton.toggleWhenActive(m_SpinShooterMotorsCommand);
-    // shooterLoadJoystickButton.whenPressed(m_ShooterLoadCommand);
-    // shooterShootJoystickButton.whenPressed(m_ShooterShootCommand);
+    JoystickButton SpinMotorsButton = new JoystickButton(m_joystick, 8);
+    JoystickButton shooterLoadJoystickButton = new JoystickButton(m_joystick, 7);
+    JoystickButton shooterShootJoystickButton = new JoystickButton(m_joystick, 9);
+    SpinMotorsButton.toggleWhenActive(m_SpinShooterMotorsCommand);
+    shooterLoadJoystickButton.whenPressed(m_ShooterLoadCommand);
+    shooterShootJoystickButton.whenPressed(m_ShooterShootCommand);
 
-    ShuffleboardTab ShooterTab = Shuffleboard.getTab("ShooterTab");
-    ShooterTab.add("Spin Motors", m_SpinShooterMotorsCommand);
-    ShooterTab.add("Shoot", m_ShooterShootCommand);
-    ShooterTab.add("Load", m_ShooterLoadCommand);
+    ShuffleboardTab Autonomous = Shuffleboard.getTab("Autonomous Tab");
+
+    // ShuffleboardTab Teleop = Shuffleboard.getTab("Teleop Tab\t\t\t\t");
+    // Teleop.add("Spin Motors", m_SpinShooterMotorsCommand);
+    // Teleop.add("Shoot", m_ShooterShootCommand);
+    // Teleop.add("Load", m_ShooterLoadCommand);
+    // Teleop.add("Tester", new TestCommand());
+
+    ShuffleboardTab EndGame = Shuffleboard.getTab("Endgame");
   }
 
   /**

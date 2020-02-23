@@ -44,7 +44,8 @@ public class ShooterSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
 
-  final TalonFXInvertType kInvertType = TalonFXInvertType.CounterClockwise;
+  final TalonFXInvertType kInvertTypeA = TalonFXInvertType.CounterClockwise;
+  final TalonFXInvertType kInvertTypeB = TalonFXInvertType.Clockwise;
   final NeutralMode kBrakeDurNeutral = NeutralMode.Coast;
   private final TalonFX m_motorA;
   private final TalonFX m_motorB;
@@ -53,10 +54,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private final DoubleSolenoid BallShove;
   private final DoubleSolenoid BallBlock;
 
+  private Double WantedSpeed = 10000.0;
+
   private final Logger logger = Logger.getLogger(this.getClass().getName());
 
   double Motor1Voltage = 1;
   double Motor2Voltage = -1;
+
+  final static int ConfigTimeOut = 30;
 
   // FeedbackDevice m_motorAEncoder;
   // FeedbackDevice m_motorBEncoder;
@@ -80,14 +85,34 @@ public class ShooterSubsystem extends SubsystemBase {
     this.m_motorB = motorB;
     this.m_motors[1] = motorB;
 
-    m_motorA.setInverted(kInvertType);
-    m_motorB.setInverted(kInvertType);
+    m_motorA.setInverted(kInvertTypeA);
+    m_motorB.setInverted(kInvertTypeB);
 
     m_motorA.setNeutralMode(kBrakeDurNeutral);
     m_motorB.setNeutralMode(kBrakeDurNeutral);
 
     m_motorA.configOpenloopRamp(0.25);
     m_motorB.configOpenloopRamp(0.25);
+
+    m_motorA.configNominalOutputForward(0, ConfigTimeOut);
+		m_motorA.configNominalOutputReverse(0, ConfigTimeOut);
+		m_motorA.configPeakOutputForward(1, ConfigTimeOut);
+    m_motorA.configPeakOutputReverse(-1, ConfigTimeOut);
+
+    m_motorA.config_kF(0, 1, ConfigTimeOut);
+		m_motorA.config_kP(0, 0, ConfigTimeOut);
+		m_motorA.config_kI(0, 0, ConfigTimeOut);
+    m_motorA.config_kD(0,0, ConfigTimeOut);
+     
+    // m_motorB.configNominalOutputForward(0, 30);
+		// m_motorB.configNominalOutputReverse(0, 30);
+		// m_motorB.configPeakOutputForward(1, 30);
+    // m_motorB.configPeakOutputReverse(-1, 30);
+    
+    // m_motorB.config_kF(0, 1, ConfigTimeOut);
+		// m_motorB.config_kP(0, 0, ConfigTimeOut);
+		// m_motorB.config_kI(0, 0, ConfigTimeOut);
+		// m_motorB.config_kD(0,0, ConfigTimeOut);
 
 
     // m_motorEncoders = new FeedbackDevice[2];
@@ -99,40 +124,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
    // Motor1.setTolerance(50);
     //Motor2.setTolerance(50);
-
     BallShove = SolenoidA;
     BallBlock = SolenoidB;
 
   }
 
   public void SpinMotor(){
-    //Motor1Voltage = Motor1.calculate(m_motorFixedAEncoder.getVelocity(), 5000);
-    //Motor2Voltage = Motor2.calculate(m_motorFixedBEncoder.getVelocity(), 5000);
-
-    // if(Motor1Voltage > 1){
-    //   Motor1Voltage = 1;
-    //   logger.info("Motor1 tried to go too fast");
-    // }
-    // if(Motor1Voltage < -1){
-    //   Motor1Voltage = -1;
-    //   logger.info("Motor1 tried to go too fast");
-    // }
-    // if(Motor2Voltage > 1){
-    //   Motor2Voltage = 1; 
-    //   logger.info("Motor2 tried to go too fast");
-    // }
-    // if(Motor2Voltage < -1){
-    //   Motor2Voltage = -1;
-    //   logger.info("Motor2 tried to go too fast");
-    // }
-
-   this.m_motorA.set(ControlMode.PercentOutput, 0.95);
-   this.m_motorB.set(ControlMode.PercentOutput, -0.95);
-
+    // this.m_motorA.set(ControlMode.PercentOutput, 0.5);
+    // this.m_motorB.set(ControlMode.PercentOutput, 0.5);
+    
+    this.m_motorA.set(ControlMode.Velocity, WantedSpeed);
+    m_motorB.follow(m_motorA);
+  
     logger.info("Shoot was called");
 
-    SmartDashboard.putNumber("Shooter Motor 1 RPM ", m_motorA.getSelectedSensorVelocity()/2048);
-    SmartDashboard.putNumber("Shooter Motor 2 RPM ", m_motorB.getSelectedSensorVelocity()/2048);
+    SmartDashboard.putNumber("Shooter Motor 1 RPM ", m_motorA.getSelectedSensorVelocity());
+    SmartDashboard.putNumber("Shooter Motor 2 RPM ", m_motorB.getSelectedSensorVelocity());
   }
 
   public void fireBall(){

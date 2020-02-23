@@ -34,7 +34,6 @@ public class PickUpSubsystem extends SubsystemBase {
    * Creates a new ShooterSubsystem.
    */
   private final CANSparkMax m_motorA;
-  private final CANSparkMax[] m_motors;
   private DoubleSolenoid m_Solenoid;
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -47,9 +46,7 @@ public class PickUpSubsystem extends SubsystemBase {
 
   public PickUpSubsystem(CANSparkMax motorA, DoubleSolenoid Solenoid) {
 
-    this.m_motors = new CANSparkMax[6];
     this.m_motorA = motorA;
-    this.m_motors[0] = motorA;
     m_Solenoid = Solenoid;
   }
 

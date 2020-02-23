@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.wpilibj.Compressor;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -120,6 +123,7 @@ public class Robot extends TimedRobot {
     //logger.info("The robot has entered teleop periodic.");
     // This makes sure that the autonomous stops running when
     // teleop starts running.
+    Shuffleboard.update();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
