@@ -14,8 +14,8 @@ public final class Constants {
     public static final int kFrontRightChannel = 13;
     public static final int kRearRightChannel = 14;
 
-    public static final int ShooterMotor1CanID = 20;
-    public static final int ShooterMotor2CanID = 22;
+    public static final int ShooterMotor1CanID = 16;
+    public static final int ShooterMotor2CanID = 18;
 
     public static final int PickUpMotorCanID = 19;
 

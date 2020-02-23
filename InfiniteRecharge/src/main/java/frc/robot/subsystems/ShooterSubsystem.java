@@ -8,7 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.RobotContainer;
 // import com.revrobotics.CANEncoder;
 // import com.revrobotics.CANError;
 // import com.revrobotics.CANSparkMax;
@@ -37,6 +37,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kForward;
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.kReverse;
 
+import frc.robot.Robot;
+
 
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -52,9 +54,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX[] m_motors;
 
   private final DoubleSolenoid BallShove;
-  private final DoubleSolenoid BallBlock;
 
-  private Double WantedSpeed = 10000.0;
+  private Double WantedSpeed;
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
 
@@ -75,9 +76,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public static final double kDefaultMaxOutput = 1.0;
   protected double m_maxOutput = kDefaultMaxOutput;
 
+  RobotContainer m_RobotContainer;
 
-  public ShooterSubsystem(TalonFX motorA, TalonFX motorB, DoubleSolenoid SolenoidA,
-   DoubleSolenoid SolenoidB) {
+
+  public ShooterSubsystem(TalonFX motorA, TalonFX motorB, DoubleSolenoid Solenoid) {
 
     this.m_motors = new TalonFX[2];
     this.m_motorA = motorA;
@@ -103,6 +105,8 @@ public class ShooterSubsystem extends SubsystemBase {
 		m_motorA.config_kP(0, 0, ConfigTimeOut);
 		m_motorA.config_kI(0, 0, ConfigTimeOut);
     m_motorA.config_kD(0,0, ConfigTimeOut);
+
+    
      
     // m_motorB.configNominalOutputForward(0, 30);
 		// m_motorB.configNominalOutputReverse(0, 30);
@@ -124,17 +128,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
    // Motor1.setTolerance(50);
     //Motor2.setTolerance(50);
-    BallShove = SolenoidA;
-    BallBlock = SolenoidB;
-
+    BallShove = Solenoid;
   }
 
   public void SpinMotor(){
     // this.m_motorA.set(ControlMode.PercentOutput, 0.5);
     // this.m_motorB.set(ControlMode.PercentOutput, 0.5);
+
+    WantedSpeed = Robot.getShooterMotorSpeed();
     
     this.m_motorA.set(ControlMode.Velocity, WantedSpeed);
-    m_motorB.follow(m_motorA);
+    //m_motorB.follow(m_motorA);
   
     logger.info("Shoot was called");
 
@@ -143,13 +147,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void fireBall(){
-    BallShove.set(kForward);
-    BallBlock.set(kReverse);
+    BallShove.set(kReverse);
   }
 
   public void LoadBall(){
-    BallShove.set(kReverse);
-    BallBlock.set(kForward);
+    BallShove.set(kForward);
   }
 
   public void Stop(){

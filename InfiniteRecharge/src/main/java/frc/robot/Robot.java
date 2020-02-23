@@ -26,6 +26,9 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private Compressor c = new Compressor(0);
+  public static double ShooterMotorSpeed = 0;
+
+ 
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -123,7 +126,6 @@ public class Robot extends TimedRobot {
     //logger.info("The robot has entered teleop periodic.");
     // This makes sure that the autonomous stops running when
     // teleop starts running.
-    Shuffleboard.update();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -148,5 +150,13 @@ public class Robot extends TimedRobot {
     // TODO: Implement a test sequence which exercises robot functionality
     CommandScheduler.getInstance().run();
     //logger.info("The command scheduler is running.");
+  }
+
+  public static double getShooterMotorSpeed(){
+    return ShooterMotorSpeed;
+  }
+
+  public static void setShooterMotorSpeed(double x){
+    ShooterMotorSpeed = x;
   }
 }
