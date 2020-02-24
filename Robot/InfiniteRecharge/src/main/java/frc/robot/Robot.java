@@ -1,47 +1,64 @@
 package frc.robot;
 
+import java.util.logging.Logger;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import edu.wpi.first.wpilibj.Compressor;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the TimedRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+  private Compressor c = new Compressor(0);
+  public static double ShooterMotorSpeed = 0;
+
+ 
+
   /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
+   * This function is run when the robot is first started up and should be used
+   * for any initialization code.
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    logger.info("Team 1123 robot is initializing.");
+    // Instantiate our RobotContainer. This will perform all our button bindings,
+    // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    CommandScheduler.getInstance().enable();
     CommandScheduler.getInstance().cancelAll();
+    logger.info("All prior scheduled commands are cancelled.");
+
+    LiveWindow.disableAllTelemetry();
+    logger.info("All LiveWindow telementery is disabled.");
   }
 
   /**
-   * This function is called every robot packet, no matter the mode. Use this for items like
-   * diagnostics that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before
-   * LiveWindow and SmartDashboard integrated updating.
+   * This function is called every robot packet, no matter the mode. Use this for
+   * items like diagnostics that you want ran during disabled, autonomous,
+   * teleoperated and test.
    */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.    
+    // This must be called from the robot's periodic
+    // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
   }
 
@@ -50,29 +67,33 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    CommandScheduler.getInstance().enable();
+    logger.info("The robot is initializing disabled mode.");
     CommandScheduler.getInstance().cancelAll();
-
+    logger.info("All prior scheduled commands are cancelled.");
   }
 
   @Override
   public void disabledPeriodic() {
     // TODO: Execute motor safety stop
-    CommandScheduler.getInstance().disable();
   }
 
   /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
+   * This autonomous runs the autonomous command selected by your
+   * {@link RobotContainer} class.
    */
   @Override
-  public void autonomousInit(){
-    CommandScheduler.getInstance().enable();
-    Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+  public void autonomousInit() {
+    logger.info("The robot is initializing autonomous mode.");
+    c.setClosedLoopControl(true);
 
-    // schedule the autonomous command
-    if (m_autonomousCommand != null) {      
+    CommandScheduler.getInstance().cancelAll();
+    logger.info("All prior scheduled commands are cancelled.");
+
+    Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    logger.info("The autonomous command is scheduled.");
   }
 
   /**
@@ -80,16 +101,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    //logger.info("The robot has entered autonomous periodic.");
+    //logger.info("The command scheduler is running.");
     CommandScheduler.getInstance().run();
   }
 
   @Override
-  public void teleopInit() {    
-    CommandScheduler.getInstance().enable();
+  public void teleopInit() {
+    logger.info("The robot is intializing teleop mode.");
     // This makes sure that the autonomous stops running when
     // teleop starts running.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+      logger.info("The prior scheduled autonomous command is cancelled.");
+      c.setClosedLoopControl(true);
     }
   }
 
@@ -98,6 +123,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    //logger.info("The robot has entered teleop periodic.");
     // This makes sure that the autonomous stops running when
     // teleop starts running.
     if (m_autonomousCommand != null) {
@@ -105,12 +131,14 @@ public class Robot extends TimedRobot {
     }
 
     CommandScheduler.getInstance().run();
+    //logger.info("The command scheduler is running.");
   }
 
   @Override
   public void testInit() {
-    CommandScheduler.getInstance().enable();
+    logger.info("The robot is initializing test mode.");
     CommandScheduler.getInstance().cancelAll();
+    logger.info("All prior scheduled commands are cancelled.");
   }
 
   /**
@@ -118,7 +146,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    //logger.info("The robot has entered test periodic.");
     // TODO: Implement a test sequence which exercises robot functionality
     CommandScheduler.getInstance().run();
+    //logger.info("The command scheduler is running.");
+  }
+
+  public static double getShooterMotorSpeed(){
+    return ShooterMotorSpeed;
+  }
+
+  public static void setShooterMotorSpeed(double x){
+    ShooterMotorSpeed = x;
   }
 }

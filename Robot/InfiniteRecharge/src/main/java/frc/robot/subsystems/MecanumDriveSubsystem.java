@@ -1,12 +1,16 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import frc.robot.drive.AdvancedMecanumDrive;
+
+import java.util.logging.Logger;
+
 import com.ctre.phoenix.motorcontrol.can.*;
 import frc.robot.Constants;
 
 public class MecanumDriveSubsystem extends SubsystemBase {
-  private MecanumDrive m_robotDrive;
+  private final Logger logger = Logger.getLogger(this.getClass().getName());
+  private AdvancedMecanumDrive m_robotDrive;
 
   /**
    * Creates a new MecanumDriveSubsystem.
@@ -17,7 +21,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     WPI_TalonFX frontRight = new WPI_TalonFX(Constants.kFrontRightChannel);
     WPI_TalonFX rearRight = new WPI_TalonFX(Constants.kRearRightChannel);
 
-    m_robotDrive = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+    m_robotDrive = new AdvancedMecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+    logger.info("The mecanum drive subsystem is initialized.");
   }
 
   @Override
@@ -26,7 +31,13 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     // TODO: Implement periodic functionality such as updating dashboards/logs
   }
 
-  public void driveCartesian(double xval, double yval, double zval, double gyroval) {
-    m_robotDrive.driveCartesian(xval, -yval, zval, gyroval);
+  public void driveCartesian(double yval, double xval, double zval, double throttle) {
+    //logger.info(String.format("X: %s, Y: %s, Z: %s, G: %s", xval, yval, zval, gyroval));
+    m_robotDrive.driveCartesian(-yval, -xval, zval, throttle);
+  }
+
+  public void pivotCartesian(double yval, double xval, double zval, double throttle) {
+    //logger.info(String.format("X: %s, Y: %s, Z: %s, G: %s", xval, yval, zval, gyroval));
+    m_robotDrive.pivotCartesian(-yval, -xval, zval, throttle);
   }
 }

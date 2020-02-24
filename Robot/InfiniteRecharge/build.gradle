@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    id "edu.wpi.first.GradleRIO" version "2020.3.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -23,6 +23,7 @@ deploy {
     artifacts {
         frcJavaArtifact('frcJava') {
             targets << "roborio"
+            jvmArgs = [ '-Djava.util.logging.config.file=/home/lvuser/deploy/logging.properties' ]
             // Debug can be overridden by command line, for use with VSCode
             debug = frc.getDebugOrDefault(false)
         }
