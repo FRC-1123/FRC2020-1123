@@ -7,6 +7,12 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import edu.wpi.first.wpilibj.Compressor;
+
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -18,6 +24,11 @@ public class Robot extends TimedRobot {
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+
+  private Compressor c = new Compressor(0);
+  public static double ShooterMotorSpeed = 0;
+
+ 
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -73,6 +84,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     logger.info("The robot is initializing autonomous mode.");
+    c.setClosedLoopControl(true);
 
     CommandScheduler.getInstance().cancelAll();
     logger.info("All prior scheduled commands are cancelled.");
@@ -102,6 +114,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
       logger.info("The prior scheduled autonomous command is cancelled.");
+      c.setClosedLoopControl(true);
     }
   }
 
@@ -137,5 +150,13 @@ public class Robot extends TimedRobot {
     // TODO: Implement a test sequence which exercises robot functionality
     CommandScheduler.getInstance().run();
     //logger.info("The command scheduler is running.");
+  }
+
+  public static double getShooterMotorSpeed(){
+    return ShooterMotorSpeed;
+  }
+
+  public static void setShooterMotorSpeed(double x){
+    ShooterMotorSpeed = x;
   }
 }
