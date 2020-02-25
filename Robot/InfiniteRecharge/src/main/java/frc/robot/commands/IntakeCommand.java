@@ -1,37 +1,24 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.PickUpSubsystem;
+import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.logging.Logger;
 
-
-/**
- * An example command that uses an example subsystem.
- */
-public class PickUpCommand extends CommandBase {
+public class IntakeCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
-  private PickUpSubsystem m_subsystem;
 
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public PickUpCommand(PickUpSubsystem subsystem) {
-    m_subsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+  public IntakeCommand() {
+    addRequirements(RobotContainer.getInstance().intakeSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info("got to PickUp Activate");
-    m_subsystem.Activate();
+    // TODO: Should this be placed in execute instead?
+    logger.info("Command :: Activate intake.");
+    RobotContainer.getInstance().intakeSubsystem.Activate();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,8 +30,9 @@ public class PickUpCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // TODO: Should this be place in a separate command?
     logger.info("got to PickUp Stop");
-    m_subsystem.Stop();
+    RobotContainer.getInstance().intakeSubsystem.Stop();
   }
 
   // Returns true when the command should end.
