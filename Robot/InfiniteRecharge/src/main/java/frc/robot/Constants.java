@@ -15,15 +15,15 @@ public final class Constants {
     public static final int kRearRightChannel = 14;
   
     // TODO: Verify these assignment values
-    public static final int ShooterMotor1CanID = 20;
-    public static final int ShooterMotor2CanID = 22;
+    public static final int ShooterMotor1CanID = 16;
+    public static final int ShooterMotor2CanID = 18;
     public static final int ShooterRamPCM = 1;
     public static final int ShooterRamForwardModule = 1;
     public static final int ShooterRamReverseModule = 6;
 
     // TODO: Verify these assignment values
     public static final int IntakeMotorCanID = 19;
-    public static final int IntakePistonPCM = 1;
+    public static final int IntakePistonPCM = 2;
     public static final int IntakePistonForwardModule = 0;
     public static final int IntakePistonReverseModule = 7;
 

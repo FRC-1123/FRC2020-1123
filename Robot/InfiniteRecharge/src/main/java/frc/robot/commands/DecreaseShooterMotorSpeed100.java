@@ -1,31 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.logging.Logger;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
 
-import frc.robot.Robot;
-
-
-/**
- * An example command that uses an example subsystem.
- */
 public class DecreaseShooterMotorSpeed100 extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
   public DecreaseShooterMotorSpeed100() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -33,9 +19,10 @@ public class DecreaseShooterMotorSpeed100 extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Robot.setShooterMotorSpeed(Robot.getShooterMotorSpeed()-100);
-    logger.info("Shooter MotorSpeed = " + Robot.getShooterMotorSpeed());
-    SmartDashboard.putNumber("Shooter Motor Speed ", Robot.getShooterMotorSpeed());
+    double newSpeed = RobotContainer.getInstance().shooter.getSetSpeed()-100;
+    RobotContainer.getInstance().shooter.setSpeed(newSpeed);
+    logger.info("Shooter MotorSpeed = " + newSpeed);
+    SmartDashboard.putNumber("Shooter Motor Speed ", newSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

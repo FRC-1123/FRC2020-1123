@@ -23,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private TalonFX motorB = new TalonFX(Constants.ShooterMotor2CanID);
   private DoubleSolenoid ballRamSolenoid = new DoubleSolenoid(Constants.ShooterRamPCM,
       Constants.ShooterRamForwardModule, Constants.ShooterRamReverseModule);
+  private double motorSetPoint = 0.0;
+  private boolean subsystemActive = false;
 
   final static int ConfigTimeOut = 30;
 
@@ -57,11 +59,14 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void SpinMotor(double desiredSpeed) {
+    motorSetPoint = desiredSpeed;
     motorA.setNeutralMode(NeutralMode.Coast);
     motorB.setNeutralMode(NeutralMode.Coast);
 
     motorA.set(ControlMode.Velocity, desiredSpeed);
     motorB.follow(motorA);
+
+    subsystemActive = true;
 
     logger.info("Shooter spinning at " + desiredSpeed);
     SmartDashboard.putNumber("Shooter Motor 1 RPM ", motorA.getSelectedSensorVelocity());
@@ -83,11 +88,27 @@ public class ShooterSubsystem extends SubsystemBase {
     motorB.set(ControlMode.PercentOutput, 0);
     motorA.setNeutralMode(NeutralMode.Brake);
     motorB.setNeutralMode(NeutralMode.Brake);
+    subsystemActive = false;
   }
 
   @Override
   public void periodic() {
     // TODO: Update dashboard motor speed via NetworkTables
+  }
+
+  public boolean isActive(){
+    return this.subsystemActive;
+  }
+
+  public double getSetSpeed(){
+    return motorSetPoint;
+  }
+
+  public void setSpeed(double desiredSpeed){
+    this.motorSetPoint = desiredSpeed;
+    // Update the running motors with the new speed.
+    if(isActive())
+      this.SpinMotor(desiredSpeed);
   }
 
   /**
