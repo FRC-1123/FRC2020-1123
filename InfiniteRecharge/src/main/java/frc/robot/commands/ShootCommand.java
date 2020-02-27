@@ -35,7 +35,8 @@ public class ShootCommand extends CommandBase {
   @Override
   public void initialize() {
     logger.info("got to motor Activate");
-    m_subsystem.SpinMotor();
+    // TODO: Retrieve the desired motor speed
+    m_subsystem.SpinMotor(2500);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

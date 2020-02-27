@@ -13,11 +13,19 @@ public final class Constants {
     public static final int kRearLeftChannel = 12;
     public static final int kFrontRightChannel = 13;
     public static final int kRearRightChannel = 14;
-
+  
+    // TODO: Verify these assignment values
     public static final int ShooterMotor1CanID = 16;
     public static final int ShooterMotor2CanID = 18;
+    public static final int ShooterRamPCM = 2;
+    public static final int ShooterRamForwardModule = 0;
+    public static final int ShooterRamReverseModule = 1;
 
-    public static final int PickUpMotorCanID = 19;
+    // TODO: Verify these assignment values
+    public static final int IntakeMotorCanID = 19;
+    public static final int IntakePistonPCM = 1;
+    public static final int IntakePistonForwardModule = 1;
+    public static final int IntakePistonReverseModule = 6;
 
     public static final int kJoystickChannel = 0;
 }
