@@ -86,8 +86,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void Stop() {
     motorA.set(ControlMode.PercentOutput, 0);
     motorB.set(ControlMode.PercentOutput, 0);
-    motorA.setNeutralMode(NeutralMode.Brake);
-    motorB.setNeutralMode(NeutralMode.Brake);
     subsystemActive = false;
   }
 
