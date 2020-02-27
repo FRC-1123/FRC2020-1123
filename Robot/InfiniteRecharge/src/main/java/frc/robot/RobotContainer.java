@@ -16,10 +16,10 @@ import frc.robot.subsystems.*;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The singleton instance of this class. 
+  // The singleton instance of this class.
   private static RobotContainer instance;
-  private final Logger logger = Logger.getLogger(this.getClass().getName());
-  
+  private static final Logger logger = Logger.getLogger(frc.robot.RobotContainer.class.getName());
+
   public final Joystick driverJoystick = new Joystick(Constants.kJoystickChannel);
 
   public final MecanumDriveSubsystem driveSubsystem = new MecanumDriveSubsystem();
@@ -30,8 +30,15 @@ public class RobotContainer {
    * Retrieves the single instance of RobotContainer
    */
   public synchronized static RobotContainer getInstance() {
-    if (instance == null)
+    if (instance == null) {
       instance = new RobotContainer();
+
+      logger.info("Initializing the JoystickControlSystem.");
+      JoystickControlSystem.initialize();
+
+      logger.info("Initializing the DashboardControlSystem.");
+      DashboardControlSystem.initialize();
+    }
     return instance;
   }
 
@@ -39,11 +46,7 @@ public class RobotContainer {
    * The private constructor for this singleton class.
    */
   private RobotContainer() {
-    logger.info("Initializing the JoystickControlSystem.");
-    JoystickControlSystem.initialize();
 
-    logger.info("Initializing the DashboardControlSystem.");
-    DashboardControlSystem.initialize();
   }
 
   /**
