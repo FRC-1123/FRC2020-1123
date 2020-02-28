@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj.Compressor;
 public class Robot extends TimedRobot {
   private final Logger logger = Logger.getLogger(this.getClass().getName());
 
-  private Compressor c = new Compressor(2);
+  private Compressor c = new Compressor(0);
   public static double ShooterMotorSpeed = 0; 
 
   /**
@@ -99,6 +100,7 @@ public class Robot extends TimedRobot {
       logger.info("The prior scheduled autonomous command is cancelled.");
       c.setClosedLoopControl(true);
     }
+    Shuffleboard.selectTab("Teleop");
   }
 
   /**
@@ -133,13 +135,5 @@ public class Robot extends TimedRobot {
     // TODO: Implement a test sequence which exercises robot functionality
     CommandScheduler.getInstance().run();
     //logger.info("The command scheduler is running.");
-  }
-
-  public static double getShooterMotorSpeed(){
-    return ShooterMotorSpeed;
-  }
-
-  public static void setShooterMotorSpeed(double x){
-    ShooterMotorSpeed = x;
   }
 }

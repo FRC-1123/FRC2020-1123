@@ -16,7 +16,6 @@ public class JoystickControlSystem {
 
     // For convenience reference the subsystems in the container
     Joystick driverJoystick = RobotContainer.getInstance().driverJoystick;
-    logger.info("*******************************test here");
     MecanumDriveSubsystem driveSubsystem = RobotContainer.getInstance().driveSubsystem;
 
     logger.info("Mecanum drive subsystem defaulting to driveCartesian.");
@@ -30,12 +29,13 @@ public class JoystickControlSystem {
 
     // TODO: Move to the secondary driver control system
     // Binds button 2 to control Limelight LEDs
-    JoystickButton ledButton = new JoystickButton(driverJoystick, 3);
-    ledButton.whenPressed(new LimelightCommand());
+    // JoystickButton ledButton = new JoystickButton(driverJoystick, 2);
+    // ledButton.whenPressed(new InstantCommand(LimelightCommand::setLedStatus, new
+    // LimelightCamera()));
 
     logger.info("Driver button 2 bound to activate intake.");
     JoystickButton intakeActivateButton = new JoystickButton(driverJoystick, 2);
-    intakeActivateButton.whenHeld(new IntakeCommand());
+    intakeActivateButton.toggleWhenActive(new IntakeCommand());
 
     // TODO: Move to the secondary driver control system
     // Shooter Button bindings
@@ -47,7 +47,7 @@ public class JoystickControlSystem {
     JoystickButton activateMotorsButton = new JoystickButton(driverJoystick, 8);
     activateMotorsButton.toggleWhenActive(new SpinShooterMotorsCommand());  
     
-    logger.info("Driver button 9 bound to shoot.");
+    logger.info("Driver button 8 bound to shoot.");
     JoystickButton shootButton = new JoystickButton(driverJoystick, 9);    
     shootButton.whenPressed(new ShooterShootCommand());
   }

@@ -24,8 +24,8 @@ public final class Constants {
     // TODO: Verify these assignment values
     public static final int IntakeMotorCanID = 19;
     public static final int IntakePistonPCM = 1;
-    public static final int IntakePistonForwardModule = 1;
-    public static final int IntakePistonReverseModule = 6;
+    public static final int IntakePistonForwardModule = 6;
+    public static final int IntakePistonReverseModule = 1;
 
     public static final int kJoystickChannel = 0;
 }

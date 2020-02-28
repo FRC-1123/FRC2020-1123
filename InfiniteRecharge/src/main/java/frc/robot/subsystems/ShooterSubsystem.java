@@ -14,6 +14,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.Constants;
 
+import frc.robot.RobotContainer;
+
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.Joystick;
+
+
 /**
  * Creates a new ShooterSubsystem.
  */
@@ -28,10 +34,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
   final static int ConfigTimeOut = 30;
 
+  double throttle;
+
+  Joystick driverJoystick = new Joystick(1);
   public ShooterSubsystem() {
     // Wipe any prior motor settings
     motorA.configFactoryDefault();
     motorB.configFactoryDefault();
+
+    motorA.setNeutralMode(NeutralMode.Coast);
+    motorB.setNeutralMode(NeutralMode.Coast);
 
     // Set motor direction
     motorA.setInverted(TalonFXInvertType.CounterClockwise);
@@ -56,31 +68,37 @@ public class ShooterSubsystem extends SubsystemBase {
     motorA.config_kP(0, 0, ConfigTimeOut);
     motorA.config_kI(0, 0, ConfigTimeOut);
     motorA.config_kD(0, 0, ConfigTimeOut);
+
+    motorA.configOpenloopRamp(0.4);
+    motorB.configOpenloopRamp(0.4);
+
   }
 
   public void SpinMotor(double desiredSpeed) {
-    motorSetPoint = desiredSpeed;
-    motorA.setNeutralMode(NeutralMode.Coast);
-    motorB.setNeutralMode(NeutralMode.Coast);
+    // motorSetPoint = desiredSpeed;
+    throttle = (driverJoystick.getThrottle());//*10000;
+    // logger.info("Throttle = " + driverJoystick.getThrottle());
 
-    // motorA.set(ControlMode.Velocity, desiredSpeed);
-    // if(motorA.getSelectedSensorVelocity()<desiredSpeed){
+    //  motorA.set(ControlMode.Velocity, motorSetPoint);
+    // if(motorA.getSelectedSensorVelocity()<motorSetPoint){
     //   motorA.set(ControlMode.PercentOutput, 1);
+    //   motorB.set(ControlMode.PercentOutput, 1);
     // }
     // else{
-    //   motorA.set(ControlMode.PercentOutput, 0.3);
+    //   motorA.set(ControlMode.PercentOutput, motorA.getMotorOutputPercent() *0.9);
+    //   motorB.set(ControlMode.PercentOutput, motorA.getMotorOutputPercent() *0.9);
     // }
-    Joystick driverJoystick = RobotContainer.getInstance().driverJoystick;
-      
-    motorA.set(ControlMode.PercentOutput, 0.90 );
-    motorB.follow(motorA);
+    // motorA.set(ControlMode.PercentOutput, 0.7);
+    // motorB.follow(motorA);
+    motorA.set(ControlMode.PercentOutput, motorSetPoint/10000);
+    motorB.set(ControlMode.PercentOutput, motorSetPoint/10000);
+
 
     subsystemActive = true;
 
-    logger.info("Shooter spinning at " + desiredSpeed);
+    logger.info("Shooter trying to spin at " + motorSetPoint);
     SmartDashboard.putNumber("Shooter Motor 1 RPM ", motorA.getSelectedSensorVelocity());
     SmartDashboard.putNumber("Shooter Motor 2 RPM ", motorB.getSelectedSensorVelocity());
-    SmartDashboard.putNumber("B box area", LimelightCamera.getArea());
   }
 
   public void fireBall() {
@@ -96,8 +114,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void Stop() {
     motorA.set(ControlMode.PercentOutput, 0);
     motorB.set(ControlMode.PercentOutput, 0);
-    motorA.setNeutralMode(NeutralMode.Coast);
-    motorB.setNeutralMode(NeutralMode.Coast);
     subsystemActive = false;
   }
 
@@ -117,8 +133,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setSpeed(double desiredSpeed){
     this.motorSetPoint = desiredSpeed;
     // Update the running motors with the new speed.
-    if(isActive())
-      this.SpinMotor(desiredSpeed);
+    // if(isActive())
+    //   this.SpinMotor(Motor);
   }
 
   /**

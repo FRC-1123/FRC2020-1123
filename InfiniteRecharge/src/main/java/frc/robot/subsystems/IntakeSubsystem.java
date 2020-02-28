@@ -23,16 +23,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void Activate() {
-    intakeSolenoid.set(Value.kForward);
+    intakeSolenoid.set(Value.kReverse);
     logger.info("Intake extended.");
 
-    intakeMotor.set(0.5);
+    intakeMotor.set(-0.5);
     logger.info("Intake activated.");
   }
 
   public void Stop() {
     intakeMotor.stopMotor();
-    intakeSolenoid.set(Value.kReverse);
+    intakeSolenoid.set(Value.kForward);
     logger.info("Intake stopped and retracted.");
   }
 
