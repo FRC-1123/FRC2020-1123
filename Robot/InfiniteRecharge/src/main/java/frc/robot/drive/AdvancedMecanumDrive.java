@@ -173,18 +173,18 @@ public class AdvancedMecanumDrive extends RobotDriveBase implements Sendable, Au
     input.rotate(-gyroAngle);
 
     double[] wheelSpeeds = new double[4];
-    if (xSpeed == 0 && ySpeed == 0) {
-      wheelSpeeds[MotorType.kFrontLeft.value] = zRotation;
-      wheelSpeeds[MotorType.kFrontRight.value] = -zRotation;
-      wheelSpeeds[MotorType.kRearLeft.value] = zRotation;
-      wheelSpeeds[MotorType.kRearRight.value] = -zRotation;
-    }
-    else {
-      wheelSpeeds[MotorType.kFrontLeft.value] = input.x + input.y; //+ zRotation;
-      wheelSpeeds[MotorType.kFrontRight.value] = -input.x + input.y; //- zRotation;
-      wheelSpeeds[MotorType.kRearLeft.value] = -input.x + input.y; //+ zRotation;
-      wheelSpeeds[MotorType.kRearRight.value] = input.x + input.y; //- zRotation; 
-    }
+    // if (xSpeed == 0 && ySpeed == 0) {
+    //   wheelSpeeds[MotorType.kFrontLeft.value] = zRotation;
+    //   wheelSpeeds[MotorType.kFrontRight.value] = -zRotation;
+    //   wheelSpeeds[MotorType.kRearLeft.value] = zRotation;
+    //   wheelSpeeds[MotorType.kRearRight.value] = -zRotation;
+    // }
+    // else {
+      wheelSpeeds[MotorType.kFrontLeft.value] = input.x + input.y + zRotation;
+      wheelSpeeds[MotorType.kFrontRight.value] = -input.x + input.y - zRotation;
+      wheelSpeeds[MotorType.kRearLeft.value] = -input.x + input.y + zRotation;
+      wheelSpeeds[MotorType.kRearRight.value] = input.x + input.y - zRotation; 
+    // }
     normalize(wheelSpeeds);
     m_frontLeftMotor.set(wheelSpeeds[MotorType.kFrontLeft.value] * maxThrottle);
     m_frontRightMotor.set(wheelSpeeds[MotorType.kFrontRight.value] * maxThrottle

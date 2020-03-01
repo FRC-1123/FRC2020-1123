@@ -17,15 +17,21 @@ public final class Constants {
     // TODO: Verify these assignment values
     public static final int ShooterMotor1CanID = 16;
     public static final int ShooterMotor2CanID = 18;
-    public static final int ShooterRamPCM = 1;
-    public static final int ShooterRamForwardModule = 1;
-    public static final int ShooterRamReverseModule = 6;
+    public static final int ShooterRamPCM = 2;
+    public static final int ShooterRamForwardModule = 0;
+    public static final int ShooterRamReverseModule = 1;
 
     // TODO: Verify these assignment values
     public static final int IntakeMotorCanID = 19;
-    public static final int IntakePistonPCM = 2;
-    public static final int IntakePistonForwardModule = 0;
-    public static final int IntakePistonReverseModule = 7;
+    public static final int IntakePistonPCM = 1;
+    public static final int IntakePistonForwardModule = 1;
+    public static final int IntakePistonReverseModule = 2;
+
+    public static final int ClimberMotorLeftCanID = 15;
+    public static final int ClimberMotorRightCanID = 17;
+    public static final int ClimberPCM = 2;
+    public static final int ClimberSolenoidForward = 3;
+    public static final int ClimberSolenoidReverse = 2;
 
     public static final int kJoystickChannel = 0;
 }

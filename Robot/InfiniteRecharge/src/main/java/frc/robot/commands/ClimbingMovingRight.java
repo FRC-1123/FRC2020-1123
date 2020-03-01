@@ -6,47 +6,38 @@ import frc.robot.RobotContainer;
 
 import java.util.logging.Logger;
 
-public class StartShooterMotorsCommand extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class ClimbingMovingRight extends CommandBase {
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   int time = 0;
 
-  public StartShooterMotorsCommand() {
+  public ClimbingMovingRight() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.getInstance().shooter);
+    addRequirements(RobotContainer.getInstance().driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info("Activating shooter motors.");
-    // TODO: Retrieve the desired motor speed
-    RobotContainer.getInstance().shooter.SpinMotor(2500);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: Retrieve the desired motor speed
-    RobotContainer.getInstance().shooter.SpinMotor(2500);
-    logger.info("In StartShooterMotorExecute");
-    time++;
+    RobotContainer.getInstance().driveSubsystem.driveCartesian(-5, 0, 0, 0.1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    RobotContainer.getInstance().driveSubsystem.driveCartesian(0, 0, 0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(time>3){
-      return true;
-    }
     return false;
   }
 }

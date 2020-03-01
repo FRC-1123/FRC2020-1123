@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterSubsystem;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,7 +14,7 @@ import frc.robot.RobotContainer;
 /**
  * An example command that uses an example subsystem.
  */
-public class ShootCommand extends CommandBase {
+public class LowerGoalShootCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -27,7 +26,7 @@ public class ShootCommand extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ShootCommand() {
+  public LowerGoalShootCommand() {
     addRequirements(RobotContainer.getInstance().shooter);
     addRequirements(RobotContainer.getInstance().intakeSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,33 +36,30 @@ public class ShootCommand extends CommandBase {
   @Override
   public void initialize() {
     logger.info("got to motor Activate");
-    RobotContainer.getInstance().shooter.SpinMotor(7400);
-    RobotContainer.getInstance().intakeSubsystem.IntakeSlowHigh();
+    RobotContainer.getInstance().shooter.LowGoalSpin();
+    RobotContainer.getInstance().intakeSubsystem.IntakeSlow();
     RobotContainer.getInstance().shooter.ResetNumberOfBallsFired();
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     time++;
-    RobotContainer.getInstance().shooter.SpinMotor(7200);
     if(time>50){
-      RobotContainer.getInstance().shooter.FireBallAndRetractHigh();
-    }  
+      RobotContainer.getInstance().shooter.FireBallAndRetract();
+  }
       // RobotContainer.getInstance().intakeSubsystem.IntakeSlow();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    logger.info("got to High Goal Shoot Stop");
+    logger.info("got to Lower Goal Shoot Stop");
     RobotContainer.getInstance().shooter.Stop();
     RobotContainer.getInstance().shooter.LoadBall();
     RobotContainer.getInstance().intakeSubsystem.Stop();
     RobotContainer.getInstance().shooter.ResetNumberOfBallsFired();
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
-    time = 0;
+
   }
 
   // Returns true when the command should end.
