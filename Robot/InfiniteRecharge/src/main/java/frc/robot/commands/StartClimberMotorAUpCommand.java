@@ -6,32 +6,31 @@ import frc.robot.RobotContainer;
 
 import java.util.logging.Logger;
 
-public class StartShooterMotorsCommand extends CommandBase {
+public class StartClimberMotorAUpCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   int time = 0;
 
-  public StartShooterMotorsCommand() {
+  public StartClimberMotorAUpCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.getInstance().shooter);
+    addRequirements(RobotContainer.getInstance().Climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info("Activating shooter motors.");
+    // logger.info("Activating shooter motors.");
     // TODO: Retrieve the desired motor speed
-    RobotContainer.getInstance().shooter.SpinMotor(2500);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+    RobotContainer.getInstance().Climber.SpinMotorAUp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // TODO: Retrieve the desired motor speed
-    RobotContainer.getInstance().shooter.SpinMotor(2500);
-    logger.info("In StartShooterMotorExecute");
+    RobotContainer.getInstance().Climber.SpinMotorAUp();
+    // logger.info("In StartShooterMotorExecute");
     time++;
   }
 

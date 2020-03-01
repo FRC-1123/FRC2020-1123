@@ -40,4 +40,8 @@ public class MecanumDriveSubsystem extends SubsystemBase {
     //logger.info(String.format("X: %s, Y: %s, Z: %s, G: %s", xval, yval, zval, gyroval));
     m_robotDrive.pivotCartesian(-yval, -xval, zval, throttle);
   }
+
+  public void drivePolar(double magnitude, double angle, double zRotation){
+    m_robotDrive.drivePolar(magnitude, angle, zRotation);
+  }
 }

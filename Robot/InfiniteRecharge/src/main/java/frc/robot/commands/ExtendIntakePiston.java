@@ -1,41 +1,39 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import java.util.logging.Logger;
 
-public class IncreaseShooterMotorSpeed100 extends CommandBase {
+public class ExtendIntakePiston extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   int time = 0;
 
-  public IncreaseShooterMotorSpeed100() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public ExtendIntakePiston() {
+    addRequirements(RobotContainer.getInstance().intakeSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double newSpeed = RobotContainer.getInstance().shooter.getSetSpeed()+100;
-    RobotContainer.getInstance().shooter.setSpeed(newSpeed);
-    logger.info("Shooter MotorSpeed = " + newSpeed);
-    SmartDashboard.putNumber("Shooter Motor Speed ", newSpeed);
+    // TODO: Should this be placed in execute instead?
+    // logger.info("Command :: Activate intake.");
+    RobotContainer.getInstance().intakeSubsystem.ExtendPiston();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //logger.info("Increase Motor Speed was called");
     time++;
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    // TODO: Should this be place in a separate command?
+    // logger.info("got to PickUp Stop");
   }
 
   // Returns true when the command should end.

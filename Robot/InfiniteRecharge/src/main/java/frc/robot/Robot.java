@@ -5,10 +5,13 @@ import java.util.logging.Logger;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
+
+import frc.robot.DashboardControlSystem;
 
 public class Robot extends TimedRobot {
   private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -44,6 +47,7 @@ public class Robot extends TimedRobot {
     // This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Auto", RobotContainer.getInstance().getAutoNum());
   }
 
   /**
@@ -73,6 +77,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     logger.info("All prior scheduled commands are cancelled.");
 
+    String temp = DashboardControlSystem.getAutoStr();
+    RobotContainer.getInstance().setAutoString(temp);
+
     Command m_autonomousCommand = RobotContainer.getInstance().getAutonomousCommand();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -101,6 +108,7 @@ public class Robot extends TimedRobot {
       c.setClosedLoopControl(true);
     }
     Shuffleboard.selectTab("Teleop");
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
   }
 
   /**

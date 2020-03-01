@@ -11,6 +11,7 @@ public class DecreaseShooterMotorSpeed50 extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
+  int time = 0;
 
   public DecreaseShooterMotorSpeed50() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,6 +31,7 @@ public class DecreaseShooterMotorSpeed50 extends CommandBase {
   @Override
   public void execute() {
     //logger.info("Increase Motor Speed was called");
+    time++;
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +42,9 @@ public class DecreaseShooterMotorSpeed50 extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(time>3){
+      return true;
+    }
     return false;
   }
 }

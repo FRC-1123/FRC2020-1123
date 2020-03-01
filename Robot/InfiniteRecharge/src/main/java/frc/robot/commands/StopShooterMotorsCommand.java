@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
@@ -13,6 +14,7 @@ public class StopShooterMotorsCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
+  int time = 0;
   
   public StopShooterMotorsCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,6 +32,7 @@ public class StopShooterMotorsCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.getInstance().shooter.Stop();
+    time++;
   }
 
   // Called once the command ends or is interrupted.
@@ -37,11 +40,15 @@ public class StopShooterMotorsCommand extends CommandBase {
   public void end(boolean interrupted) {
     logger.info("got to Shooter Motor Spin Stop");
     RobotContainer.getInstance().shooter.Stop();
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(1);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if(time>3){
+      return true;
+    }
     return false;
   }
 }

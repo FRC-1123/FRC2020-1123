@@ -1,44 +1,41 @@
 package frc.robot.commands;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.logging.Logger;
 
-public class StartShooterMotorsCommand extends CommandBase {
+import frc.robot.RobotContainer;
+
+public class DecreaseShooterMotorSpeed1000 extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
 
   private final Logger logger = Logger.getLogger(this.getClass().getName());
   int time = 0;
 
-  public StartShooterMotorsCommand() {
+  public DecreaseShooterMotorSpeed1000() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(RobotContainer.getInstance().shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    logger.info("Activating shooter motors.");
-    // TODO: Retrieve the desired motor speed
-    RobotContainer.getInstance().shooter.SpinMotor(2500);
-    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").forceSetNumber(3);
+    double newSpeed = RobotContainer.getInstance().shooter.getSetSpeed()-1000;
+    RobotContainer.getInstance().shooter.setSpeed(newSpeed);
+    logger.info("Shooter MotorSpeed = " + newSpeed);
+    SmartDashboard.putNumber("Shooter Motor Speed ", newSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: Retrieve the desired motor speed
-    RobotContainer.getInstance().shooter.SpinMotor(2500);
-    logger.info("In StartShooterMotorExecute");
+    //logger.info("Increase Motor Speed was called");
     time++;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
   }
 
   // Returns true when the command should end.
